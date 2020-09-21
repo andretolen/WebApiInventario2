@@ -1,0 +1,77 @@
+﻿@using WebApiInventario.Models;
+@model IEnumerable<WebApiInventario.Models.Inventario>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    //Layout = null;
+}
+
+<!DOCTYPE html>
+
+<h4 class="center-align">Lista de Inventario</h4>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<style>
+
+    .thNew, .tdNew {
+        border: 1px solid #444;
+        padding: 10px;
+        text-align: left;
+    }
+</style>
+  
+
+<div>
+    <input type="button" class="btn waves-effect waves-light" name="name3" id="btn2" value="Get All Items" />
+    <br />
+    <br />
+    <table id="divInventory" class="striped">
+    </table>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        $('#btn2').click(function () {
+            $("#divInventory").empty();
+            $.getJSON("/api/Inventario/AllInventarios/", function (data) {
+
+                var trHTML = '';
+                trHTML += '<thead><tr>' +
+                    '<th class="card-panel teal lighten-2">Id Inventario</th>' +
+                    '<th class="card-panel teal lighten-2">Nombre Producto</th>' +
+                    '<th class="card-panel teal lighten-2">Codigo Producto</th>' +
+                    '<th class="card-panel teal lighten-2">Descripcion de Producto</th>' +
+                    '<th class="card-panel teal lighten-2">Tipo de Producto </th>' +
+                    '<th class="card-panel teal lighten-2">Cantidad</th>' +
+                    '<th class="card-panel teal lighten-2">Precio de Producto</th>' +
+                    '<th class="card-panel teal lighten-2">Fecha de Caducidad</th>' +
+                    '</tr></thead>';
+
+                $.each(data, function (key, val) {
+                    var fullDate = new Date(data[key].FechaCaducidad);
+                    var twoDigitMonth = (parseInt((fullDate.getMonth() + 1).toString().length) === 1) ? '0' + (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+                    var currentDate = fullDate.getDate() + "/" + twoDigitMonth + "/" + fullDate.getFullYear();
+
+                    trHTML += '<tbody><tr><td class="tdNew">' + data[key].IdInventario + '</td>' +
+                        '<td class="tdNew">' + data[key].NombreProducto + '</td>' +
+                        '<td class="tdNew">' + data[key].CodigoProducto + '</td>' +
+                        '<td class="tdNew">' + data[key].DescripcionProducto + '</td>' +
+                        '<td class="tdNew">' + data[key].TipoProducto + '</td>' +
+                        '<td class="tdNew">' + data[key].Cantidad + '</td>' +
+                        '<td class="tdNew">' + data[key].PrecioProducto + ' €</td>' +
+                        '<td class="tdNew">' + currentDate + '</td></tr></tbody>';
+
+                });
+                $('#divInventory').append(trHTML);
+            })
+
+        })
+
+    });
+
+</script>
+
+
+
+
